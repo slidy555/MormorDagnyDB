@@ -1,0 +1,52 @@
+DROP TABLE IF EXISTS ReceptRåvaror;
+DROP TABLE IF EXISTS Recept;
+DROP TABLE IF EXISTS Produkter;
+DROP TABLE IF EXISTS Råvaror;
+DROP TABLE IF EXISTS Leverantörer;
+DROP TABLE IF EXISTS Inköp;
+
+CREATE TABLE Leverantörer (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Namn TEXT NOT NULL,
+    Adress TEXT NOT NULL,
+    Kontaktperson TEXT NOT NULL,
+    Telefonnummer TEXT NOT NULL,
+    Epost TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE Råvaror (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Artikelnummer TEXT NOT NULL UNIQUE,
+    Namn TEXT NOT NULL,
+    PrisPerKg REAL NOT NULL,
+    LeverantörId INTEGER,
+    FOREIGN KEY(LeverantörId) REFERENCES Leverantörer(Id)
+);
+
+CREATE TABLE Produkter (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Namn TEXT NOT NULL
+);
+
+CREATE TABLE Recept (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ProduktId INTEGER NOT NULL,
+    FOREIGN KEY(ProduktId) REFERENCES Produkter(Id)
+);
+
+CREATE TABLE ReceptRåvaror (
+    ReceptId INTEGER,
+    RåvaraId INTEGER,
+    MängdKg REAL NOT NULL,
+    PRIMARY KEY(ReceptId, RåvaraId),
+    FOREIGN KEY(ReceptId) REFERENCES Recept(Id),
+    FOREIGN KEY(RåvaraId) REFERENCES Råvaror(Id)
+);
+
+CREATE TABLE Inköp (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    RåvaraId INTEGER,
+    MängdKg REAL NOT NULL,
+    Datum DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY(RåvaraId) REFERENCES Råvaror(Id)
+);
